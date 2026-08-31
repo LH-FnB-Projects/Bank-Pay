@@ -14,14 +14,14 @@
         .copy-btn { background: #02c39a; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; font-family: sans-serif; }
         .copy-btn:active { background: #00a896; }
         .bank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .bank-link { display: block; padding: 12px; background: #05668d; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; }
+        .bank-link { display: block; padding: 12px; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
         .alert-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Volunteer Sale Payment</h2>
+        <h2>Forest & Bird Plant Sale</h2>
         <p>Copy the details below, then open your banking app to pay via Internet Banking.</p>
 
         <!-- Account Name -->
@@ -56,10 +56,10 @@
         <h3>🚀 Open Your Bank App</h3>
         <p style="font-size: 13px; color: #586069;">Tap to instantly switch to your native mobile app:</p>
         <div class="bank-grid">
-            <a class="bank-link" style="background:#00a3a2;" href="kiwibank://">Kiwibank</a>
-            <a class="bank-link" style="background:#002f6c;" href="anzbank://">ANZ</a>
-            <a class="bank-link" style="background:#20a144;" href="asbmobile://">ASB</a>
-            <a class="bank-link" style="background:#0f2c59;" href="westpac://">Westpac</a>
+            <a id="link-kiwi" class="bank-link" style="background:#00a3a2;">Kiwibank</a>
+            <a id="link-anz"  class="bank-link" style="background:#002f6c;">ANZ</a>
+            <a id="link-asb"  class="bank-link" style="background:#20a144;">ASB</a>
+            <a id="link-westpac" class="bank-link" style="background:#0f2c59;">Westpac</a>
         </div>
     </div>
 
@@ -68,6 +68,7 @@
     </div>
 
     <script>
+        // 1. Unified Clipboard Copy System
         function copyText(elementId, btn) {
             const text = document.getElementById(elementId).innerText;
             navigator.clipboard.writeText(text).then(() => {
@@ -80,6 +81,38 @@
                 }, 1500);
             });
         }
+
+        // 2. Cross-Platform App Router Logic
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if device user-agent matches Android platforms
+            const isAndroid = /Android/i.test(navigator.userAgent);
+
+            // Device configurations mapping standard scheme to Google package targets
+            const apps = {
+                kiwi: {
+                    ios: "kiwibank://",
+                    android: "intent://#Intent;scheme=kiwibank;package=nz.co.kiwibank.mobile;end"
+                },
+                anz: {
+                    ios: "anzbank://",
+                    android: "intent://#Intent;scheme=anzbank;package=com.anz.android.retailbank.nz;end"
+                },
+                asb: {
+                    ios: "asbmobile://",
+                    android: "intent://#Intent;scheme=asbmobile;package=nz.co.asb.asbmobile;end"
+                },
+                westpac: {
+                    ios: "westpac://",
+                    android: "intent://#Intent;scheme=westpac;package=nz.co.westpac.one;end"
+                }
+            };
+
+            // Inject the appropriate cross-platform URL mapping into the target HTML anchors
+            document.getElementById("link-kiwi").href = isAndroid ? apps.kiwi.android : apps.kiwi.ios;
+            document.getElementById("link-anz").href = isAndroid ? apps.anz.android : apps.anz.ios;
+            document.getElementById("link-asb").href = isAndroid ? apps.asb.android : apps.asb.ios;
+            document.getElementById("link-westpac").href = isAndroid ? apps.westpac.android : apps.westpac.ios;
+        });
     </script>
 
 </body>
